@@ -27,6 +27,7 @@ class ScalingTensor:
             self.clsmethod = clsmethod
             self.ignore_none = ignore_none
             self.kwargs = kwargs
+            self.type_casts = []
 
         def __call__(self, func):
             """Override __call__.
@@ -232,6 +233,7 @@ meta.dtype is {meta_dtype} (meta.qtype is {meta.qtype}).'
         Return:
             ScalingTensor: a ScalingTensor with desired qtype.
         """
+        self.type_casts.append((self.meta.qtype, qtype))
         if qtype == self.meta.qtype:
             return self
 
