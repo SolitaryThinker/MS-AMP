@@ -14,9 +14,9 @@ from msamp.common.utils import TransformerEngineWrapper
 
 class ScalingTensor:
     """Customized tensor with scaling."""
+    TYPE_CASTS = []
     class UniqueDtypeDecorator:
         """A decorator class to check whether dtype is supported and parameters are uniqie."""
-        TYPE_CASTS = []
         def __init__(self, clsmethod=False, ignore_none=False, **kwargs):
             """Constructor.
 
@@ -28,7 +28,6 @@ class ScalingTensor:
             self.clsmethod = clsmethod
             self.ignore_none = ignore_none
             self.kwargs = kwargs
-            self.type_casts = []
 
         def __call__(self, func):
             """Override __call__.
@@ -83,6 +82,7 @@ class ScalingTensor:
         self._grad = None
         self._backward_post_hooks = HookManager()
         self.meta = meta
+        self.type_casts = []
 
         meta_dtype = Dtypes.get_dtype_from_qtype(meta.qtype)
         if meta_dtype != value.dtype:

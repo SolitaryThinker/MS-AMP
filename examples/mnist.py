@@ -63,11 +63,16 @@ def train(args, model, device, train_loader, optimizer, epoch):
     """
     scaler = torch.cuda.amp.GradScaler()
     model.train()
+    print(msamp.common.tensor.ScalingTensor.TYPE_CASTS)
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
+        print(msamp.common.tensor.ScalingTensor.TYPE_CASTS)
         with torch.cuda.amp.autocast():
             output = model(data)
+
+        print(msamp.common.tensor.ScalingTensor.TYPE_CASTS)
+        return
         loss = F.nll_loss(output, target)
         scaler.scale(loss).backward()
         scaler.step(optimizer)
