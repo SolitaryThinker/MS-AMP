@@ -16,6 +16,7 @@ class ScalingTensor:
     """Customized tensor with scaling."""
     class UniqueDtypeDecorator:
         """A decorator class to check whether dtype is supported and parameters are uniqie."""
+        TYPE_CASTS = []
         def __init__(self, clsmethod=False, ignore_none=False, **kwargs):
             """Constructor.
 
@@ -233,6 +234,7 @@ meta.dtype is {meta_dtype} (meta.qtype is {meta.qtype}).'
         Return:
             ScalingTensor: a ScalingTensor with desired qtype.
         """
+        ScalingTensor.TYPE_CASTS.append((self.meta.qtype, qtype))
         self.type_casts.append((self.meta.qtype, qtype))
         if qtype == self.meta.qtype:
             return self
