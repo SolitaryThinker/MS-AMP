@@ -234,6 +234,7 @@ meta.dtype is {meta_dtype} (meta.qtype is {meta.qtype}).'
         Return:
             ScalingTensor: a ScalingTensor with desired qtype.
         """
+        print('==calling cast')
         ScalingTensor.TYPE_CASTS.append((self.meta.qtype, qtype))
         self.type_casts.append((self.meta.qtype, qtype))
         if qtype == self.meta.qtype:
