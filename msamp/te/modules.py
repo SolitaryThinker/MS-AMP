@@ -6,6 +6,7 @@
 import torch
 import transformer_engine.pytorch as te
 from transformer_engine.pytorch.module.base import TransformerEngineBaseModule
+from transformer_engine.pytorch.float8_tensor import Float8Tensor
 
 from msamp.common.tensor import ScalingTensor
 from msamp.nn import ScalingModule
@@ -66,20 +67,29 @@ class MSAMPTransformerEngineBaseModule:
                 setattr(
                     self,
                     weight_cast_attr,
-                    torch.empty(
-                        (0, 0),
-                        device=torch.cuda.current_device(),
-                        dtype=torch.uint8,
-                    ),
+                    Float8Tensor(
+                        data=torch.empty(
+                            shape,
+                            device=torch.cuda.current_device(),
+                            dtype=torch.uint8,
+                        ),
+                        fp8_dtype=tex.DType.kFloat8E4M3,
+                        fp8_scale_inv=1,
+                    )
                 )
                 setattr(
                     self,
                     weight_transpose_attr,
-                    torch.empty(
-                        (0, 0),
-                        device=torch.cuda.current_device(),
-                        dtype=torch.uint8,
-                    ),
+                    Float8Tensor(
+                        data=torch.empty(
+                            shape[1],
+                            shape[0],
+                            device=torch.cuda.current_device(),
+                            dtype=torch.uint8,
+                        ),
+                        fp8_dtype=tex.DType.kFloat8E4M3,
+                        fp8_scale_inv=1,
+                    )
                 )
 
     @property
@@ -110,6 +120,37 @@ class MSAMPTransformerEngineBaseModule:
         # when is_first_microbatch is None, create empty tensors
         if not self.is_msamp_module:
             return super().get_fp8_weights_empty_tensors(is_first_microbatch)
+
+        assert is_first_microbatch is None, "Should only be here when "\
+                                            "`is_first_microbatch` is None!"
+        fp8_weight_tensors = []
+        for shape in self.fp8_weight_shapes:
+            fp8_weight_tensors.append(
+                Float8Tensor(
+                    data=torch.empty(
+                        shape,
+                        device=torch.cuda.current_device(),
+                        dtype=torch.uint8,
+                    ),
+                    fp8_dtype=tex.DType.kFloat8E4M3,
+                    fp8_scale_inv=1,
+                )
+            )
+            fp8_weight_tensors.append(
+                Float8Tensor(
+                    data=torch.empty(
+                        shape[1],
+                        shape[0],
+                        device=torch.cuda.current_device(),
+                        dtype=torch.uint8,
+                    ),
+                    fp8_dtype=tex.DType.kFloat8E4M3,
+                    fp8_scale_inv=1,
+                )
+            )
+        return fp8_weight_tensors
+
+        """
         # MS-AMP
         old_fp8_weight_shapes = self.fp8_weight_shapes
         self.fp8_weight_shapes = [(0, 0)] * len(old_fp8_weight_shapes)
@@ -117,6 +158,7 @@ class MSAMPTransformerEngineBaseModule:
         rtn = super().get_fp8_weights_empty_tensors(is_first_microbatch)
         self.fp8_weight_shapes = old_fp8_weight_shapes
         return rtn
+        """
 
 
 class MSAMPLinear(MSAMPTransformerEngineBaseModule, te.Linear, ScalingModule):
