@@ -5,6 +5,7 @@
 
 import torch
 import transformer_engine.pytorch as te
+import transformer_engine_extensions as tex
 from transformer_engine.pytorch.module.base import TransformerEngineBaseModule
 from transformer_engine.pytorch.float8_tensor import Float8Tensor
 
