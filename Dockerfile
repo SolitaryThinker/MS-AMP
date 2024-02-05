@@ -40,6 +40,11 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/*
 
+#TODO timm
+# sudo /workspace/git-lfs-3.4.1/install.sh
+# pip install protobuf==3.20.*
+# maybe also sshd_config
+
 ARG NUM_MAKE_JOBS=
 ENV PATH="${PATH}" \
     LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH}"
