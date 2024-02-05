@@ -65,10 +65,10 @@ RUN cd third_party/msccl && \
 # cache TE build to save time in CI
 #-gencode=arch=compute_70,code=sm_70 \
 ENV MAX_JOBS=1
-RUN python3 -m pip install --upgrade pip && \
+RUN python3 -m pip install --upgrade pip
     #python3 -m pip install flash-attn==1.0.9 git+https://github.com/NVIDIA/TransformerEngine.git@v0.11
     # this is the commit for 1.13. No tags available yet
-    python3 -m pip install git+https://github.com/NVIDIA/TransformerEngine.git@ab66d19
+    #python3 -m pip install git+https://github.com/NVIDIA/TransformerEngine.git@ab66d19
 
 #ADD . .
 
