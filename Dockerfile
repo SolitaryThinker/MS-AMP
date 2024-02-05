@@ -57,7 +57,7 @@ RUN git submodule update --init --recursive
 
 #ADD third_party third_party
 RUN cd third_party/msccl && \
-    git checkout msccl-v2.18-release && \ # checkout the correct version
+    git checkout msccl-v2.18-release && \
     make -j ${NUM_MAKE_JOBS} src.build NVCC_GENCODE="\
     -gencode=arch=compute_80,code=sm_80 \
     -gencode=arch=compute_90,code=sm_90" && \
