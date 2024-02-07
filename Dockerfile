@@ -30,6 +30,7 @@ RUN apt-get update && \
     moreutils \
     net-tools \
     openssh-client \
+    python3-mpi4py \
     openssh-server \
     sudo \
     util-linux \
